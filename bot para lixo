@@ -1,0 +1,125 @@
+import discord
+import random
+from discord.ext import commands
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+def gen_pass(pass_length):
+    elements = "+-/*!&$#?=@<>"
+    password = ""
+    for i in range(pass_length):
+        password += random.choice(elements)
+    return password
+
+
+def gen_emoji():
+    emojis = ["😀", "🙂", "😆", "🤣"]
+    return random.choice(emojis)
+
+
+def flip_coin():
+    flip = random.randint(0, 1)
+    if flip == 0:
+        return "cara"
+    else:
+        return "coroa"
+
+
+def get_bye():
+    mensagens = ["Bye!", "See you later!", "Bye! Have a great day!"]
+    return random.choice(mensagens)
+
+
+def get_hello():
+    mensagens = ["Hi! What do you need?", "Hello!", "Hey!", "Hi!"]
+    return random.choice(mensagens)
+
+
+@bot.event
+async def on_ready():
+    sincs = await bot.tree.sync()
+    print(f'{len(sincs)} comandos sincronizados')
+    print(f'Estamos logados como {bot.user}')
+
+@bot.command()
+async def lixo(ctx:commands.Context):
+    embed = discord.Embed(
+        title='Tipos de lixos',
+        description='Venha conhecer os tipos de lixos',
+        color=discord.Color.green()
+    )
+
+    embed.add_field(
+        name="Lixo Reciclável",
+        value="Usando esse tipo de lixo os materiais que podem ser transformados em novos produtos, como papel, plástico.",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Lixo Orgânico",
+        value="Este lixo serve para os restos de alimentos, cascas de frutas, folhas e outros. esse materiais podem ser usados para compostagem.",
+        inline=False
+    )
+    embed.add_field(
+        name="Lixo Perigoso",
+        value="Os materiais como pilhas, baterias, lâmpadas, remedios vencidos. Eles precisam ser descartados em locais específicos.",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Lixo Comum",
+        value="Esse lixo é utilizado para materiais que não podem ser reciclados, como papel higiênico usado, esponjas e outros.",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Por que separar o lixo?",
+        value="Separar o lixo ajuda a reduzir a poluição, facilita a reciclagem e protege o meio ambiente.",
+        inline=False
+    )
+
+    embed.set_image(url='https://i0.wp.com/www.larplasticos.com.br/wp-content/uploads/2019/06/coleta-seletiva.jpg?resize=626%2C455')
+
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def comandos(ctx:commands.Context):
+    minha_embed = discord.Embed()
+    minha_embed.title = 'nossos comandos'
+    minha_embed.description = 'temos os seguintes codigos: $oi, $bye, $genpass, $coin, $smile. $oi: ele envia uma mensagem de olá $bye: envia uma mensagem de tchau $genpass: cria uma senha $coin: tira cara ou coroa $smile: sorteia um emoji'
+    
+    await ctx.reply(embed=minha_embed)
+@bot.command()
+async def oi(ctx:commands.Context):
+    name = ctx.author.mention
+    await ctx.reply(f'olá {name}')
+
+
+
+@bot.command()
+async def tchau(ctx:commands.Context):
+    await ctx.reply(f'até mais {ctx.author.name}')
+
+
+@bot.command()
+async def genpass(ctx:commands.Context, tamanho: int = 10):
+    senha = gen_pass(tamanho)
+    await ctx.reply(f"Sua senha é: {senha}")
+
+
+@bot.command()
+async def coin(ctx:commands.Context):
+    await ctx.reply(flip_coin())
+
+
+@bot.command()
+async def smile(ctx):
+    await ctx.reply(gen_emoji())
+
+
+
+bot.run("MTUyMDIzNDI1NTQzMzYwMTAzNA.GS-q82.oiJe02CpBIC-9XMWus3EtsJGLsHwafv2nOJ5Tg")
